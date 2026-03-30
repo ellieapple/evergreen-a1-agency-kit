@@ -10,6 +10,7 @@ exports.registerSiteAuditTool = registerSiteAuditTool;
 exports.registerSiteStrategyTool = registerSiteStrategyTool;
 exports.registerContentOptimizerTool = registerContentOptimizerTool;
 exports.registerBacklinkFinderTool = registerBacklinkFinderTool;
+exports.registerSocialContentTool = registerSocialContentTool;
 const zod_1 = require("zod");
 const anthropic_js_1 = require("../services/anthropic.js");
 const BusinessContextSchema = zod_1.z.object({
@@ -173,6 +174,30 @@ function registerBacklinkFinderTool(server) {
     }, async ({ url, business }) => {
         try {
             const result = await (0, anthropic_js_1.findBacklinks)(url, business);
+            return { content: [{ type: "text", text: result }] };
+        }
+        catch (error) {
+            return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : String(error)}` }], isError: true };
+        }
+    });
+}
+function registerSocialContentTool(server) {
+    server.registerTool("seo_social_content", {
+        title: "Generate Social Media Content + Keyword Bank",
+        description: `Generates ready-to-post social media content for any client across Instagram, Facebook, and Google Business Profile — with local SEO baked in. Every Google Business Profile post includes location keywords and service terms that reinforce local pack rankings. Returns post captions, hashtags, best posting times, image prompts, AND a reusable keyword bank (location keywords, service keywords, hashtag sets, reusable phrases) to use for future posts. Works for any business type — electricians, bars, restaurants, realtors, contractors, medical, etc. Call this to generate a week or month of content at once.`,
+        inputSchema: zod_1.z.object({
+            business: BusinessContextSchema,
+            platforms: zod_1.z.array(zod_1.z.enum(["instagram", "facebook", "google_business_profile"]))
+                .min(1)
+                .describe("Which platforms to generate content for"),
+            topic: zod_1.z.string().describe("Theme or topic for this batch (e.g. 'panel upgrades', 'upcoming events this weekend', 'spring maintenance tips', 'customer spotlight')"),
+            period: zod_1.z.string().describe("Time period this content covers (e.g. 'this week', 'April 2026', 'next 2 weeks')"),
+            postsPerPlatform: zod_1.z.number().min(1).max(10).default(3).describe("How many posts to generate per platform"),
+        }).strict(),
+        annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+    }, async ({ business, platforms, topic, period, postsPerPlatform }) => {
+        try {
+            const result = await (0, anthropic_js_1.generateSocialContent)(business, platforms, topic, period, postsPerPlatform);
             return { content: [{ type: "text", text: result }] };
         }
         catch (error) {

@@ -4,4 +4,5 @@ export declare function generateSEOBrief(keyword: string, business: BusinessCont
 export declare function generateKeywordCluster(seedKeyword: string, business: BusinessContext): Promise<KeywordData[]>;
 export declare function runSiteAudit(url: string, business: BusinessContext): Promise<SiteAuditReport>;
 export declare function optimizeContent(url: string, keyword: string, business: BusinessContext): Promise<string>;
+export declare function generateSocialContent(business: BusinessContext, platforms: string[], topic: string, period: string, postsPerPlatform: number): Promise<string>;
 export declare function findBacklinks(url: string, business: BusinessContext): Promise<string>;

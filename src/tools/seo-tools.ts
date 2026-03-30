@@ -4,7 +4,7 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { generateSEOBrief, analyzeSERP, generateKeywordCluster, runSiteAudit, optimizeContent, findBacklinks } from "../services/anthropic.js";
+import { generateSEOBrief, analyzeSERP, generateKeywordCluster, runSiteAudit, optimizeContent, findBacklinks, generateSocialContent } from "../services/anthropic.js";
 import type { BusinessContext } from "../types.js";
 
 const BusinessContextSchema = z.object({
@@ -174,6 +174,31 @@ export function registerBacklinkFinderTool(server: McpServer): void {
   }, async ({ url, business }) => {
     try {
       const result = await findBacklinks(url, business as BusinessContext);
+      return { content: [{ type: "text" as const, text: result }] };
+    } catch (error) {
+      return { content: [{ type: "text" as const, text: `Error: ${error instanceof Error ? error.message : String(error)}` }], isError: true };
+    }
+  });
+}
+
+
+export function registerSocialContentTool(server: McpServer): void {
+  server.registerTool("seo_social_content", {
+    title: "Generate Social Media Content + Keyword Bank",
+    description: `Generates ready-to-post social media content for any client across Instagram, Facebook, and Google Business Profile — with local SEO baked in. Every Google Business Profile post includes location keywords and service terms that reinforce local pack rankings. Returns post captions, hashtags, best posting times, image prompts, AND a reusable keyword bank (location keywords, service keywords, hashtag sets, reusable phrases) to use for future posts. Works for any business type — electricians, bars, restaurants, realtors, contractors, medical, etc. Call this to generate a week or month of content at once.`,
+    inputSchema: z.object({
+      business: BusinessContextSchema,
+      platforms: z.array(z.enum(["instagram", "facebook", "google_business_profile"]))
+        .min(1)
+        .describe("Which platforms to generate content for"),
+      topic: z.string().describe("Theme or topic for this batch (e.g. 'panel upgrades', 'upcoming events this weekend', 'spring maintenance tips', 'customer spotlight')"),
+      period: z.string().describe("Time period this content covers (e.g. 'this week', 'April 2026', 'next 2 weeks')"),
+      postsPerPlatform: z.number().min(1).max(10).default(3).describe("How many posts to generate per platform"),
+    }).strict(),
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+  }, async ({ business, platforms, topic, period, postsPerPlatform }) => {
+    try {
+      const result = await generateSocialContent(business as BusinessContext, platforms, topic, period, postsPerPlatform);
       return { content: [{ type: "text" as const, text: result }] };
     } catch (error) {
       return { content: [{ type: "text" as const, text: `Error: ${error instanceof Error ? error.message : String(error)}` }], isError: true };

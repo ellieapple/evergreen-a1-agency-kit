@@ -15,6 +15,7 @@ import {
   registerSiteStrategyTool,
   registerContentOptimizerTool,
   registerBacklinkFinderTool,
+  registerSocialContentTool,
 } from "./tools/seo-tools.js";
 
 if (!process.env.ANTHROPIC_API_KEY) {
@@ -31,6 +32,7 @@ registerSiteAuditTool(server);
 registerSiteStrategyTool(server);
 registerContentOptimizerTool(server);
 registerBacklinkFinderTool(server);
+registerSocialContentTool(server);
 
 async function main(): Promise<void> {
   const transport = new StdioServerTransport();

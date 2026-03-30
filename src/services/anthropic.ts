@@ -350,6 +350,69 @@ Return ONLY valid JSON.`;
   return raw;
 }
 
+export async function generateSocialContent(
+  business: BusinessContext,
+  platforms: string[],
+  topic: string,
+  period: string,
+  postsPerPlatform: number
+): Promise<string> {
+  const prompt = `You are an expert social media strategist and local SEO specialist. Generate ready-to-post social media content that also builds local SEO authority.
+
+BUSINESS: ${business.name}
+TYPE: ${business.type}
+LOCATION: ${business.location || "not specified"}
+SERVICE AREA: ${business.serviceArea || business.location || "not specified"}
+USPs: ${business.usps?.join(", ") || "not specified"}
+PHONE: ${business.phone || "not specified"}
+
+PLATFORMS: ${platforms.join(", ")}
+TOPIC / THEME: ${topic}
+PERIOD: ${period}
+POSTS PER PLATFORM: ${postsPerPlatform}
+
+RULES:
+- Google Business Profile posts are LOCAL SEO signals — every GBP post must include city/area name naturally and use a service keyword
+- Instagram: conversational, behind-the-scenes friendly tone, 3-5 hashtags (mix local + niche), emoji ok
+- Facebook: slightly more formal, good for community-style posts and sharing links
+- Google Business Profile: 150-300 words, keyword-rich, always include location, end with CTA, use "What's New" or "Offer" post type
+- Voice must feel HUMAN — not corporate, not spammy, matches the business personality
+- Naturally weave in location keywords (city, nearby areas) for local SEO entity building
+- Service businesses: every 3rd post should mention a specific service with a CTA
+- Vary content types: tips, behind-the-scenes, testimonials, seasonal, community, promotions
+
+Return as JSON:
+{
+  "businessName": string,
+  "period": string,
+  "topic": string,
+  "keywordBank": {
+    "locationKeywords": string[],
+    "serviceKeywords": string[],
+    "hashtagSets": { "local": string[], "niche": string[], "branded": string[] },
+    "reusablePhrases": string[],
+    "seoNotes": string
+  },
+  "posts": [{
+    "platform": "instagram" | "facebook" | "google_business_profile",
+    "postNumber": number,
+    "type": "tip" | "behind_the_scenes" | "promotion" | "community" | "testimonial" | "seasonal" | "service_spotlight",
+    "caption": string,
+    "hashtags": string[],
+    "callToAction": string,
+    "gbpPostType": "whats_new" | "offer" | "event" | null,
+    "localSeoSignals": string,
+    "bestTimeToPost": string,
+    "imagePrompt": string
+  }],
+  "contentCalendarSummary": string,
+  "proTips": string[]
+}
+Return ONLY valid JSON.`;
+  const raw = await callAI(prompt, 5000);
+  return raw;
+}
+
 export async function findBacklinks(url: string, business: BusinessContext): Promise<string> {
   const prompt = `You are an expert link builder. Find backlink opportunities for this website.
 
