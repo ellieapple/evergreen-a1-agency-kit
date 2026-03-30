@@ -19,6 +19,8 @@ const server = new mcp_js_1.McpServer({ name: "seo-research-mcp-server", version
 (0, seo_tools_js_1.registerKeywordClusterTool)(server);
 (0, seo_tools_js_1.registerSiteAuditTool)(server);
 (0, seo_tools_js_1.registerSiteStrategyTool)(server);
+(0, seo_tools_js_1.registerContentOptimizerTool)(server);
+(0, seo_tools_js_1.registerBacklinkFinderTool)(server);
 async function main() {
     const transport = new stdio_js_1.StdioServerTransport();
     await server.connect(transport);

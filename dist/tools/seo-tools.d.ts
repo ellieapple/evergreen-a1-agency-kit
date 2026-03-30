@@ -4,3 +4,5 @@ export declare function registerSERPAnalysisTool(server: McpServer): void;
 export declare function registerKeywordClusterTool(server: McpServer): void;
 export declare function registerSiteAuditTool(server: McpServer): void;
 export declare function registerSiteStrategyTool(server: McpServer): void;
+export declare function registerContentOptimizerTool(server: McpServer): void;
+export declare function registerBacklinkFinderTool(server: McpServer): void;

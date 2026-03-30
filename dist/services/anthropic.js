@@ -11,6 +11,8 @@ exports.analyzeSERP = analyzeSERP;
 exports.generateSEOBrief = generateSEOBrief;
 exports.generateKeywordCluster = generateKeywordCluster;
 exports.runSiteAudit = runSiteAudit;
+exports.optimizeContent = optimizeContent;
+exports.findBacklinks = findBacklinks;
 const sdk_1 = __importDefault(require("@anthropic-ai/sdk"));
 const client = new sdk_1.default({ apiKey: process.env.ANTHROPIC_API_KEY });
 const ELITE_SYSTEM_PROMPT = `You are an elite SEO strategist and technical SEO expert operating at agency level. You combine:
@@ -309,5 +311,88 @@ Be SPECIFIC in fixes: not "improve title tags" but "Change homepage title from X
 Return ONLY valid JSON.`;
     const raw = await callAI(prompt, 7000);
     return parseJSON(raw);
+}
+async function optimizeContent(url, keyword, business) {
+    const prompt = `You are an elite SEO content optimizer. Analyze this existing page and provide specific improvement recommendations.
+
+URL: ${url}
+TARGET KEYWORD: ${keyword}
+BUSINESS: ${business.name} — ${business.type} in ${business.location || "not specified"}
+
+Use web search to:
+1. Fetch and analyze the current page content
+2. Check what the top 3 ranking pages for this keyword look like
+3. Identify specific gaps and improvements
+
+Return a detailed content optimization report as JSON:
+{
+  "url": string,
+  "targetKeyword": string,
+  "currentScore": number,
+  "optimizedScore": number,
+  "titleTag": { "current": string, "recommended": string, "issue": string },
+  "h1": { "current": string, "recommended": string, "issue": string },
+  "metaDescription": { "current": string, "recommended": string, "issue": string },
+  "keywordDensity": { "current": string, "recommended": string, "issue": string },
+  "missingKeywords": string[],
+  "contentGaps": string[],
+  "headingImprovements": [{ "current": string, "recommended": string, "reason": string }],
+  "missingSchema": string[],
+  "internalLinkOpportunities": [{ "anchorText": string, "targetPage": string }],
+  "readabilityIssues": string[],
+  "mobileIssues": string[],
+  "prioritizedFixes": [{ "priority": number, "fix": string, "impact": string, "effort": string }]
+}
+Return ONLY valid JSON.`;
+    const raw = await callAI(prompt, 4000);
+    return raw;
+}
+async function findBacklinks(url, business) {
+    const prompt = `You are an expert link builder. Find backlink opportunities for this website.
+
+URL: ${url}
+BUSINESS: ${business.name} — ${business.type} in ${business.location || "not specified"}
+
+Use web search to:
+1. Analyze top 3 competitors' backlink profiles
+2. Find directories, citations, and niche sites linking to competitors
+3. Identify local link opportunities (chambers, associations, local news)
+4. Find guest post opportunities in the niche
+5. Identify unlinked brand mentions
+
+Return backlink opportunities as JSON:
+{
+  "domain": string,
+  "estimatedCurrentAuthority": string,
+  "competitorBacklinks": [{
+    "competitor": string,
+    "totalReferringDomains": string,
+    "topLinkingDomains": string[]
+  }],
+  "opportunities": [{
+    "type": "directory" | "citation" | "guest-post" | "local" | "niche" | "unlinked-mention",
+    "site": string,
+    "url": string,
+    "domainAuthority": string,
+    "effort": "low" | "medium" | "high",
+    "instructions": string,
+    "isFree": boolean
+  }],
+  "quickWins": string[],
+  "localCitations": [{
+    "name": string,
+    "url": string,
+    "listed": boolean,
+    "priority": "high" | "medium" | "low"
+  }],
+  "monthlyLinkBuildingPlan": [{
+    "month": number,
+    "target": string,
+    "actions": string[]
+  }]
+}
+Return ONLY valid JSON.`;
+    const raw = await callAI(prompt, 4000);
+    return raw;
 }
 //# sourceMappingURL=anthropic.js.map

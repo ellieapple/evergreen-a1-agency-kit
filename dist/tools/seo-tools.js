@@ -8,6 +8,8 @@ exports.registerSERPAnalysisTool = registerSERPAnalysisTool;
 exports.registerKeywordClusterTool = registerKeywordClusterTool;
 exports.registerSiteAuditTool = registerSiteAuditTool;
 exports.registerSiteStrategyTool = registerSiteStrategyTool;
+exports.registerContentOptimizerTool = registerContentOptimizerTool;
+exports.registerBacklinkFinderTool = registerBacklinkFinderTool;
 const zod_1 = require("zod");
 const anthropic_js_1 = require("../services/anthropic.js");
 const BusinessContextSchema = zod_1.z.object({
@@ -133,6 +135,45 @@ function registerSiteStrategyTool(server) {
                 ],
             };
             return { content: [{ type: "text", text: JSON.stringify(strategy, null, 2) }] };
+        }
+        catch (error) {
+            return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : String(error)}` }], isError: true };
+        }
+    });
+}
+function registerContentOptimizerTool(server) {
+    server.registerTool("seo_content_optimizer", {
+        title: "Optimize Existing Page Content",
+        description: `Analyzes an existing live page and returns specific SEO improvement recommendations. Compares the page against top ranking competitors for the target keyword and identifies exactly what to fix — title tag, H1, meta description, missing keywords, content gaps, schema, internal links, readability, mobile issues. Returns a prioritized fix list with before/after recommendations.`,
+        inputSchema: zod_1.z.object({
+            url: zod_1.z.string().url().describe("URL of the existing page to optimize"),
+            keyword: zod_1.z.string().describe("Target keyword for this page"),
+            business: BusinessContextSchema,
+        }).strict(),
+        annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+    }, async ({ url, keyword, business }) => {
+        try {
+            const result = await (0, anthropic_js_1.optimizeContent)(url, keyword, business);
+            return { content: [{ type: "text", text: result }] };
+        }
+        catch (error) {
+            return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : String(error)}` }], isError: true };
+        }
+    });
+}
+function registerBacklinkFinderTool(server) {
+    server.registerTool("seo_backlink_finder", {
+        title: "Find Backlink Opportunities",
+        description: `Finds backlink opportunities for a domain by analyzing competitor backlink profiles, identifying directories and citations, finding local link opportunities (chambers, associations, local news), discovering guest post opportunities, and identifying unlinked brand mentions. Returns a prioritized link building plan with specific sites, effort level, and step-by-step instructions for each opportunity.`,
+        inputSchema: zod_1.z.object({
+            url: zod_1.z.string().url().describe("URL of the site to build links for"),
+            business: BusinessContextSchema,
+        }).strict(),
+        annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+    }, async ({ url, business }) => {
+        try {
+            const result = await (0, anthropic_js_1.findBacklinks)(url, business);
+            return { content: [{ type: "text", text: result }] };
         }
         catch (error) {
             return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : String(error)}` }], isError: true };
