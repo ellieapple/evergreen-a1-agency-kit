@@ -1,0 +1,42 @@
+# Evergreen A1 Marketing — Cursor Rules
+# Drop into every client project root as .cursorrules
+
+## STACK
+- Next.js App Router, Tailwind CSS, Vercel, GitHub
+- Images: next/image always, WebP, lazy load below fold, fetchpriority=high for hero
+- Icons: Lucide React
+- Schema: /lib/structured-data.ts — always import from here
+
+## NEVER DO
+- No plain <img> — always next/image
+- No hardcoded colors outside tailwind.config.js
+- No page without metadata (title + description)
+- No inline styles except dynamic values
+- No console.log in production
+- No raw JSON-LD inline — always use /lib/structured-data.ts
+- No component that breaks at 320px
+
+## SEO — EVERY PAGE
+- Title: 50-60 chars, keyword FIRST
+- Meta description: 150-160 chars with CTA
+- Canonical URL + Open Graph tags
+- One H1 with primary keyword
+- BreadcrumbList schema + HTML breadcrumbs
+- LocalBusiness schema on every page + page-specific stacked
+- 2+ CTAs, 3-4 internal links
+
+## MOBILE — PRIORITY #1
+- Test at 375px before done
+- Sticky click-to-call: fixed bottom, mobile only, href="tel:+1XXXXXXXXXX"
+- Touch targets: 48px minimum, 16px minimum body font
+- Always set width + height on images (prevents CLS)
+- No horizontal scroll
+
+## CLIENT CONFIG — FILL IN
+CLIENT_NAME=
+CLIENT_PHONE=
+CLIENT_PRIMARY_COLOR=
+CLIENT_HEADING_FONT=
+CLIENT_BODY_FONT=
+CLIENT_PRIMARY_KEYWORD=
+CLIENT_WEBSITE_URL=

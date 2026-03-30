@@ -1,0 +1,22 @@
+# .editorconfig — Evergreen A1 Marketing
+# Auto-read by VS Code, Cursor, WebStorm — no plugin needed.
+# Enforces consistent formatting no matter who opens the project or what editor they use.
+
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{json,jsonc}]
+indent_size = 2
+
+[*.{yml,yaml}]
+indent_size = 2
