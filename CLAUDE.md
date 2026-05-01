@@ -732,12 +732,46 @@ cp ~/seo-research-mcp/CLAUDE.md ./CLAUDE.md
 
 ---
 
-## 🔌 Recommended Additional MCPs
+## 🎭 Playwright — Browser QA (INSTALLED)
 
-These two MCPs were identified as high-value additions not yet installed:
+Playwright is installed globally. **Do not rely on code review alone.**
+After building any page or fixing any bug, use Playwright to visually verify it works in a real browser.
+
+### Always run after any page build or layout change:
+```
+Use Playwright to open the site locally, test the form/CTA flow, check desktop and mobile
+responsiveness, and take screenshots. Fix any issues found, then rerun checks.
+```
+
+### Standard QA checklist — run via Playwright on every client site:
+1. Page loads without console errors
+2. Main CTA buttons visible and tappable on mobile
+3. Contact form fills and submits successfully
+4. Thank-you / conversion state appears after submit
+5. Mobile layout has no horizontal overflow at 375px
+6. Phone number visible above the fold on all service pages
+7. Sticky click-to-call bar appears on mobile, hidden on desktop
+8. Google tag / GTM fires on page load
+9. No broken internal links
+10. All images load (no 404s)
+
+### Trigger phrases:
+- "test the site with Playwright" / "QA this page"
+- "verify mobile layout" / "check the form works"
+- "take screenshots of all pages"
+
+### Example full QA prompt:
+```
+Use Playwright to test all landing pages at mobile (375px) and desktop (1280px).
+Confirm: phone number above fold, one primary CTA, working form, conversion event fires,
+no layout overflow, Google tag present. Screenshot each result, report failures.
+```
+
+---
+
+## 🔌 Recommended Additional MCPs
 
 | MCP | Why | Install |
 |-----|-----|---------|
 | **GitHub MCP** | Lets Claude Code push commits, open PRs, manage branches without you | `claude mcp add github` |
-| **Playwright MCP** | Lets Claude Code open the actual site in a browser, verify links, check mobile layout, test forms — catches UI bugs code review misses | `claude mcp add playwright` |
 

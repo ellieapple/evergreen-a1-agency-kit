@@ -13,7 +13,7 @@ exports.registerBacklinkFinderTool = registerBacklinkFinderTool;
 exports.registerSocialContentTool = registerSocialContentTool;
 const zod_1 = require("zod");
 const anthropic_js_1 = require("../services/anthropic.js");
-const BusinessContextSchema = zod_1.z.object({
+const BusinessContextObjectSchema = zod_1.z.object({
     name: zod_1.z.string().describe("Business name"),
     type: zod_1.z.string().describe("Business type (e.g. electrician, custom home builder)"),
     location: zod_1.z.string().optional().describe("Primary city/state (e.g. Bailey, CO)"),
@@ -26,6 +26,18 @@ const BusinessContextSchema = zod_1.z.object({
     googleBusinessProfile: zod_1.z.string().optional(),
     licenseNumbers: zod_1.z.array(zod_1.z.string()).optional(),
 });
+// Accept both object AND string (Claude Code sometimes sends JSON strings)
+const BusinessContextSchema = zod_1.z.preprocess((val) => {
+    if (typeof val === "string") {
+        try {
+            return JSON.parse(val);
+        }
+        catch {
+            return val;
+        }
+    }
+    return val;
+}, BusinessContextObjectSchema);
 function registerSEOBriefTool(server) {
     server.registerTool("seo_research_page_brief", {
         title: "Generate Elite SEO Page Brief",

@@ -7,7 +7,7 @@ import { z } from "zod";
 import { generateSEOBrief, analyzeSERP, generateKeywordCluster, runSiteAudit, optimizeContent, findBacklinks, generateSocialContent } from "../services/anthropic.js";
 import type { BusinessContext } from "../types.js";
 
-const BusinessContextSchema = z.object({
+const BusinessContextObjectSchema = z.object({
   name: z.string().describe("Business name"),
   type: z.string().describe("Business type (e.g. electrician, custom home builder)"),
   location: z.string().optional().describe("Primary city/state (e.g. Bailey, CO)"),
@@ -20,6 +20,14 @@ const BusinessContextSchema = z.object({
   googleBusinessProfile: z.string().optional(),
   licenseNumbers: z.array(z.string()).optional(),
 });
+
+// Accept both object AND string (Claude Code sometimes sends JSON strings)
+const BusinessContextSchema = z.preprocess((val) => {
+  if (typeof val === "string") {
+    try { return JSON.parse(val); } catch { return val; }
+  }
+  return val;
+}, BusinessContextObjectSchema);
 
 export function registerSEOBriefTool(server: McpServer): void {
   server.registerTool("seo_research_page_brief", {
