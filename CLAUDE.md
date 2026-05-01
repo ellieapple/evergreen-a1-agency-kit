@@ -769,9 +769,36 @@ no layout overflow, Google tag present. Screenshot each result, report failures.
 
 ---
 
-## 🔌 Recommended Additional MCPs
+## 🔌 Installed MCP Servers & Tools — Full Stack
 
-| MCP | Why | Install |
-|-----|-----|---------|
-| **GitHub MCP** | Lets Claude Code push commits, open PRs, manage branches without you | `claude mcp add github` |
+### Global MCP Servers (always available in every Claude Code session)
+| Server | What it does |
+|--------|-------------|
+| `seo-research` | Custom SEO MCP — `seo_research_page_brief`, `seo_research_site_audit`, `seo_research_serp_analysis`, `seo_research_keyword_cluster`, `seo_research_site_strategy` |
+| `stitch` | Google Stitch — Google API integrations |
+| `ryze-google-ads` | Live Google Ads read/write via Ryze AI — campaign data, keywords, spend |
+
+### Claude Code Plugins (always loaded)
+| Plugin | Commands |
+|--------|---------|
+| `toprank` | `/toprank:google-ads-audit`, `/toprank:seo-analysis`, `/toprank:keyword-research`, `/toprank:meta-tags-optimizer`, `/toprank:geo-optimizer`, `/toprank:gemini` |
+| `frontend-design` | UI/component design standards |
+| `vercel` | Vercel deploy from Claude Code |
+
+### Installed Slash Command Skills
+**Ads (claude-ads):** `/ads audit`, `/ads google`, `/ads meta`, `/ads linkedin`, `/ads tiktok`, `/ads youtube`, `/ads microsoft`, `/ads apple`, `/ads creative`, `/ads landing`, `/ads budget`, `/ads plan [type]`, `/ads competitor`, `/ads math`, `/ads test`, `/ads report`, `/ads generate`, `/ads photoshoot`
+
+**SEO (claude-seo + toprank):** `/seo-analysis`, `/keyword-research`, `/meta-tags-optimizer`, `/schema-markup-generator`, `/seo-page`, `/geo-optimizer`, `/content-writer`, `/broken-link-checker`, `/setup-cms`
+
+**Marketing (coreyhaines31/marketingskills):** `/copywriting`, `/page-cro`, `/form-cro`, `/onboarding-cro`, `/signup-flow-cro`, `/popup-cro`, `/paywall-upgrade-cro`, `/email-sequence`, `/cold-email`, `/social-content`, `/content-strategy`, `/competitor-profiling`, `/competitor-alternatives`, `/pricing-strategy`, `/launch-strategy`, `/marketing-ideas`, `/marketing-psychology`, `/customer-research`, `/lead-magnets`, `/paid-ads`, `/ai-seo`, `/seo-audit`, `/programmatic-seo`, `/analytics-tracking`, `/ab-test-setup`, `/referral-program`, `/community-marketing`, `/sales-enablement`, `/revops`
+
+### Python Libraries Installed (Python 3.9 system)
+playwright, reportlab, scrapy, schedule, pandas, openpyxl, requests, beautifulsoup4, sendgrid
+
+### Video — Remotion (separate project)
+Located at `~/Desktop/content-creation-ads/`. Real MP4 video generation.
+Compositions: FullAd, ViralAd, BrandOutro, CactusJacksTrivia, EvergreenA1Ad
+Run: `cd ~/Desktop/content-creation-ads && npm start`
+
+---
 
