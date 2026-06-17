@@ -34,6 +34,11 @@ if (!AUTH_TOKEN) {
 const app = express();
 app.use(express.json({ limit: "4mb" }));
 
+// Health check — BEFORE auth middleware so Railway can probe it without a token
+app.get("/health", (_req, res) => {
+  res.json({ ok: true, sessions: sessions.size, version: "2.0.0" });
+});
+
 // Auth — every request must have Authorization: Bearer <MCP_AUTH_TOKEN>
 app.use((req, res, next) => {
   const auth = req.headers.authorization;
@@ -100,11 +105,6 @@ app.all("/mcp", async (req, res) => {
     console.error("MCP handler error:", err);
     if (!res.headersSent) res.status(500).json({ error: "Internal server error" });
   }
-});
-
-// Health check — Railway uses this to verify the service is up
-app.get("/health", (_req, res) => {
-  res.json({ ok: true, sessions: sessions.size, version: "2.0.0" });
 });
 
 const PORT = parseInt(process.env.PORT || "3100", 10);
