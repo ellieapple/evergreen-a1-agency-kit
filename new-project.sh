@@ -14,7 +14,25 @@ mkdir -p ./.vscode
 mkdir -p ./.github
 
 # ── AI context files (each tool reads its own) ───────────────
-cp "$SOURCE/CLAUDE.md"        ./CLAUDE.md          # Claude Code (auto-loaded)
+# Project CLAUDE.md: references global SEO standards + adds client-specific context
+cat > ./CLAUDE.md << 'CLAUDEOF'
+@~/.claude/CLAUDE.md
+
+---
+
+## 🏢 Client Business Context — FILL IN PER PROJECT
+
+**Business Name:** [NAME]
+**Business Type:** [TYPE]
+**Primary Location:** [CITY, STATE]
+**Service Area:** [DESCRIPTION]
+**Phone:** [PHONE]
+**Address:** [FULL ADDRESS]
+**License Numbers:** [NUMBERS]
+**USPs:** [LIST]
+**Top Competitors:** [URLS]
+**Brand Voice:** [DESCRIPTION]
+CLAUDEOF
 cp "$SOURCE/.cursorrules"     ./.cursorrules        # Cursor (auto-loaded)
 
 # GitHub Copilot instructions for VS Code
